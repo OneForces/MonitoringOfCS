@@ -1,0 +1,87 @@
+.donate-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.donate-container h2 {
+  margin-bottom: 24px;
+  font-size: 26px;
+  text-align: center;
+  color: #333;
+}
+
+.donate-qr {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.donate-qr img {
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.donate-qr p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.donate-qr a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.donate-qr button {
+  margin-top: 10px;
+  background: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.donate-form label {
+  display: block;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.donate-form input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.donate-form button {
+  margin-top: 20px;
+  background: #28a745;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.success-message {
+  margin-top: 16px;
+  color: green;
+  font-weight: 600;
+  text-align: center;
+}
+
+.error-message {
+  margin-top: 16px;
+  color: red;
+  font-weight: 600;
+  text-align: center;
+}

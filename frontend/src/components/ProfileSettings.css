@@ -1,0 +1,37 @@
+.settings-container {
+  padding: 20px;
+}
+
+.settings-forms {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.settings-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 250px;
+  width: 100%;
+}
+
+.settings-block input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.settings-block button {
+  padding: 10px;
+  background: linear-gradient(to bottom, #4baee3, #308fc7);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.settings-block button:hover {
+  background: linear-gradient(to bottom, #3a9ccc, #2678a6);
+}
