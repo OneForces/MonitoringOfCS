@@ -48,3 +48,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'votes_balance']
+
+from .models import UserNotification
+
+class UserNotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserNotification
+        fields = ['id', 'message', 'created_at', 'is_read']

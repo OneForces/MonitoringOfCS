@@ -356,3 +356,32 @@ def pay_from_balance(request):
     )
 
     return Response({'success': True})
+
+# promotions/views.py
+
+from rest_framework import viewsets
+from users.models import UserNotification
+
+class PurchaseServiceView(viewsets.ModelViewSet):
+    # ...
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+
+        # Получение имени услуги
+        service_name = ''
+        try:
+            service_id = request.data.get('service')
+            from .models import Service
+            service = Service.objects.get(id=service_id)
+            service_name = service.name
+        except:
+            service_name = 'услуга'
+
+        # Уведомление в ЛК
+        UserNotification.objects.create(
+            user=request.user,
+            message=f'Вы успешно приобрели услугу: {service_name}'
+        )
+
+        return response

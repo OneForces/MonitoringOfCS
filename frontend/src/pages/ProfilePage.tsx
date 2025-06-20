@@ -29,6 +29,13 @@ interface Server {
   downvotes?: number;
 }
 
+interface UserNotification {
+  id: number;
+  message: string;
+  created_at: string;
+  is_read: boolean;
+}
+
 const sections = [
   'Личный кабинет',
   'Услуги',
@@ -46,6 +53,7 @@ const ProfilePage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('Личный кабинет');
   const [servers, setServers] = useState<Server[]>([]);
   const [balance, setBalance] = useState("0.00");
+  const [notifications, setNotifications] = useState<UserNotification[]>([]);
 
   const fetchMyServers = async () => {
     try {
@@ -106,9 +114,23 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+  const fetchNotifications = async () => {
+    try {
+      const res = await axios.get('/users/notifications/', {
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      });
+      setNotifications(res.data);
+    } catch {
+      console.error("Ошибка загрузки уведомлений");
+    }
+  };
+
   useEffect(() => {
     fetchMyServers();
     fetchBalance();
+    fetchNotifications();
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -149,6 +171,20 @@ const ProfilePage: React.FC = () => {
                 </button>
               </div>
             </div>
+
+            {/* Уведомления */}
+            {notifications.length > 0 && (
+              <div className="notification-box">
+                <h3>Уведомления</h3>
+                <ul>
+                  {notifications.map((n) => (
+                    <li key={n.id}>
+                      <strong>{new Date(n.created_at).toLocaleString()}:</strong> {n.message}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {servers.length === 0 ? (
               <p>Список ваших серверов пуст</p>

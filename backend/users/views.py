@@ -79,3 +79,17 @@ class UserBalanceAPIView(APIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+from .models import UserNotification
+from .serializers import UserNotificationSerializer
+from rest_framework import viewsets, permissions
+
+class UserNotificationViewSet(viewsets.ModelViewSet):
+    serializer_class = UserNotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return UserNotification.objects.filter(user=self.request.user).order_by('-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
