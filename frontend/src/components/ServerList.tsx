@@ -16,7 +16,7 @@ export interface Server {
   country: string;
   isVip?: boolean;
   isOnline: boolean;
-  votes_count?: number; // ✅ заменили likes → votes_count
+  votes: number; // ✅ актуальное поле из API
 }
 
 interface ServerListProps {
@@ -41,7 +41,7 @@ const ServerList: React.FC<ServerListProps> = ({ servers, sort = 'popular', filt
         is_upvote: isUpvote,
       });
       setMessages((prev) => ({ ...prev, [serverId]: response.data.detail }));
-      onVote?.(serverId); // 🔄 обновить список серверов после голосования
+      onVote?.(serverId);
     } catch (err: any) {
       console.error('Ошибка голосования:', err.response?.data);
       const detail = err?.response?.data?.detail || 'Ошибка при голосовании';
@@ -110,7 +110,7 @@ const ServerList: React.FC<ServerListProps> = ({ servers, sort = 'popular', filt
               <div className="vote-controls">
                 <button title="Голос вверх" onClick={() => handleVote(s.id, true)}>➕</button>
                 <button title="Голос вниз" onClick={() => handleVote(s.id, false)}>➖</button>
-                <span className="star">⭐ {s.votes_count || 0}</span>
+                <span className="star">⭐ {s.votes}</span>
               </div>
               {messages[s.id] && <span className="vote-message">{messages[s.id]}</span>}
             </td>

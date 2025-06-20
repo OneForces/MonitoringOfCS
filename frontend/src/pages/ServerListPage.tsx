@@ -1,3 +1,4 @@
+// src/pages/ServerListPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ServerList, { Server } from '../components/ServerList';
@@ -28,7 +29,7 @@ const ServerListPage: React.FC = () => {
         country: s.country || 'ru',
         isVip: s.is_vip ?? false,
         isOnline: false,
-        likes: s.likes ?? 0,
+        votes: s.votes ?? 0, // ✅ правильное поле из API
       }));
 
       await Promise.all(
@@ -112,7 +113,7 @@ const ServerListPage: React.FC = () => {
         servers={filteredServers}
         sort={sort}
         filter={filter}
-        onVote={() => fetchServers()} // ✅ обновляем при голосе
+        onVote={() => fetchServers()} // ✅ обновляем после голосования
       />
 
       <Pagination
