@@ -25,5 +25,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['is_superuser'] = user.is_superuser  # ✅ добавим флаг
+        token['username'] = user.username
+        token['is_superuser'] = user.is_superuser  # ✅ добавляем флаг в payload
         return token
