@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from payments.models import ManualDonation
+from servers.models import Server, Vote
 import csv
 import os
 
@@ -20,6 +21,13 @@ class Command(BaseCommand):
                     donation = ManualDonation.objects.get(payment_code=code, status="pending")
                     donation.status = "confirmed"
                     donation.save()
-                    self.stdout.write(f"✅ Подтверждено: {donation}")
+
+                    if donation.server:
+                        for _ in range(int(donation.amount)):
+                            Vote.objects.create(user=donation.user, server=donation.server)
+                        self.stdout.write(f"✅ Донат подтверждён и {int(donation.amount)} голосов начислено на {donation.server}")
+                    else:
+                        self.stdout.write("⚠ Донат без сервера — голоса не начислены")
+
                 except ManualDonation.DoesNotExist:
-                    pass
+                    continue

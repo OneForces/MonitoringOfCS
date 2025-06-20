@@ -2,6 +2,7 @@ from django.db import models
 from users.models import CustomUser
 from uuid import uuid4
 from django.contrib.auth import get_user_model
+from servers.models import Server
 
 class Payment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -19,7 +20,7 @@ class ManualDonation(models.Model):
         ('confirmed', 'Подтверждено'),
         ('rejected', 'Отклонено'),
     )
-
+    server = models.ForeignKey(Server, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     comment = models.CharField(max_length=255, blank=True)
