@@ -2,12 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './PurchasedServicesList.css';
 
 interface PurchasedService {
   id: number;
-  user: string;
   service: string;
-  purchased_at: string;
+  expires_at: string;
+  extra_description?: string;
 }
 
 export default function PurchasedServicesList({ serverId }: { serverId: number }) {
@@ -23,12 +24,20 @@ export default function PurchasedServicesList({ serverId }: { serverId: number }
   if (services.length === 0) return null;
 
   return (
-    <div style={{ marginTop: '2rem', padding: '1rem', background: '#f9f9f9', borderRadius: '8px' }}>
-      <h3>Приобретённые услуги</h3>
-      <ul>
+    <div className="purchased-services">
+      <h3>Услуги</h3>
+      <ul className="purchased-services-list">
         {services.map((s) => (
           <li key={s.id}>
-            <strong>{s.user}</strong> купил <em>{s.service}</em> — {new Date(s.purchased_at).toLocaleString()}
+            <span className="service-name">{s.service}</span>
+            {s.extra_description && (
+              <span className="service-extra"> ({s.extra_description})</span>
+            )}
+            <span className="service-expiration">
+              {' '}Оплачено до:{' '}
+              {new Date(s.expires_at).toLocaleDateString('ru-RU')}{' '}
+              [{new Date(s.expires_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}]
+            </span>
           </li>
         ))}
       </ul>

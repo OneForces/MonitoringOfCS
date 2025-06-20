@@ -1,0 +1,47 @@
+.purchased-services {
+  margin-top: 40px;
+  padding: 20px 10px;
+  background: #fefefe;
+  border-radius: 8px;
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+
+.purchased-services h3 {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 15px;
+}
+
+.purchased-services-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 15px;
+}
+
+.purchased-services-list li {
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+  color: #444;
+}
+
+.purchased-services-list li:first-child {
+  border-top: none;
+}
+
+.service-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.service-extra {
+  color: #777;
+  font-style: italic;
+  margin-left: 6px;
+}
+
+.service-expiration {
+  margin-left: 8px;
+  color: #666;
+}

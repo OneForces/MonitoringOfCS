@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import './ServerList.css';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
-import { Server } from './ServiceCheckout'; // ❗ оставили только Server
+import { Server } from './ServiceCheckout';
 
 interface ServerListProps {
   servers: Server[];
@@ -78,7 +78,7 @@ const ServerList: React.FC<ServerListProps> = ({
             key={s.id}
             className={`${s.isVip ? 'vip-row' : ''} ${s.isOnline ? 'active-row' : 'offline-row'}`}
           >
-            <td>🎮 CS 1.6</td>
+            <td>CS1.6</td>
             <td>
               <Link to={`/server/${s.id}`} className="server-link">
                 {s.name}
@@ -90,7 +90,21 @@ const ServerList: React.FC<ServerListProps> = ({
             <td>
               <span className="players-icon">👥</span> {s.players}/{s.maxPlayers}
             </td>
-            <td>{s.map || <em>Не указана</em>}</td>
+            <td>
+              {s.map ? (
+                <div className="map-cell">
+                  <img
+                    src={`/cs16_maps/${s.map}.jpg`}
+                    alt={s.map}
+                    className="map-thumb"
+                    onError={(e) => (e.currentTarget.style.display = 'none')}
+                  />
+                  <div className="map-name">{s.map}</div>
+                </div>
+              ) : (
+                <em>Не указана</em>
+              )}
+            </td>
             <td>
               {s.isOnline ? (
                 <span className="online-status green">🟢 Онлайн</span>
@@ -102,7 +116,7 @@ const ServerList: React.FC<ServerListProps> = ({
               <div className="vote-controls">
                 <button title="Голос вверх" onClick={() => handleVote(s.id, true)}>➕</button>
                 <button title="Голос вниз" onClick={() => handleVote(s.id, false)}>➖</button>
-                <span className="star">⭐ {s.votes}</span>
+                <span className="star"> {s.votes}</span>
               </div>
               {messages[s.id] && <span className="vote-message">{messages[s.id]}</span>}
             </td>

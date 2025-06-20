@@ -1,87 +1,70 @@
+/* frontend/src/pages/DonatePage.css */
+
 .donate-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 24px;
-  background: #ffffff;
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 25px;
+  background: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .donate-container h2 {
-  margin-bottom: 24px;
-  font-size: 26px;
-  text-align: center;
-  color: #333;
-}
-
-.donate-qr {
+  margin-top: 0;
+  font-size: 22px;
+  font-weight: 600;
   text-align: center;
   margin-bottom: 20px;
 }
 
-.donate-qr img {
-  margin-bottom: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.donate-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.donate-qr p {
-  margin: 4px 0;
-  font-size: 14px;
-  color: #555;
-}
-
-.donate-qr a {
-  color: #007bff;
-  text-decoration: none;
-}
-
-.donate-qr button {
-  margin-top: 10px;
-  background: #007bff;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.donate-form label {
+.donate-container label {
+  font-weight: 500;
+  margin-bottom: 5px;
   display: block;
-  margin-top: 12px;
-  font-weight: 600;
 }
 
-.donate-form input {
-  width: 100%;
+.donate-container input,
+.donate-container select {
   padding: 10px;
-  margin-top: 4px;
-  border: 1px solid #ccc;
+  font-size: 15px;
   border-radius: 6px;
-  box-sizing: border-box;
+  border: 1px solid #ccc;
+  width: 100%;
 }
 
-.donate-form button {
-  margin-top: 20px;
-  background: #28a745;
-  color: white;
-  padding: 10px 18px;
+.donate-container button {
+  padding: 12px;
+  font-size: 16px;
   border: none;
   border-radius: 6px;
+  background-color: #4a90e2;
+  color: white;
   cursor: pointer;
-  font-size: 16px;
+  transition: background-color 0.2s ease-in-out;
 }
 
-.success-message {
-  margin-top: 16px;
-  color: green;
-  font-weight: 600;
+.donate-container button:hover {
+  background-color: #3578c3;
+}
+
+.donate-container .error,
+.donate-container .success {
+  margin-top: 10px;
+  font-size: 14px;
   text-align: center;
 }
 
-.error-message {
-  margin-top: 16px;
+.donate-container .error {
   color: red;
-  font-weight: 600;
-  text-align: center;
+}
+
+.donate-container .success {
+  color: green;
 }
