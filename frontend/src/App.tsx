@@ -1,6 +1,9 @@
+// frontend/src/App.tsx
+
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import ServerListPage from './pages/ServerListPage';
 import ListingPage from './pages/ListingPage';
 import LoginPage from './pages/LoginPage';
@@ -12,7 +15,8 @@ import ContactsPage from './pages/ContactsPage';
 import StatsPage from './pages/StatsPage';
 import ServicesPage from './pages/ServicesPage';
 import DonatePage from './pages/DonatePage';
-import ServerDetailsPage from './pages/ServerDetailsPage'; // ✅ добавлен импорт
+import ServerDetailsPage from './pages/ServerDetailsPage';
+import AdminDashboard from './pages/AdminDashboard';
 
 import Layout from './components/Layout';
 import { AuthProvider } from './context/AuthContext';
@@ -134,6 +138,18 @@ const App: React.FC = () => {
               <Layout>
                 <DonatePage />
               </Layout>
+            }
+          />
+
+          {/* ✅ Админ-панель */}
+          <Route
+            path="/admin-dashboard"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <AdminDashboard />
+                </Layout>
+              </PrivateRoute>
             }
           />
         </Routes>
