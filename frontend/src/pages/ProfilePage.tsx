@@ -23,6 +23,9 @@ interface Server {
   current_players: number;
   max_players: number;
   is_online: boolean;
+  likes?: number;
+  upvotes?: number;
+  downvotes?: number;
 }
 
 const sections = [
@@ -162,6 +165,9 @@ const ProfilePage: React.FC = () => {
                       maxPlayers: server.max_players,
                       country: 'ru',
                       isOnline: server.is_online,
+                      likes: server.likes,
+                      upvotes: server.upvotes,
+                      downvotes: server.downvotes,
                     }}
                   />
                   <div style={{ marginTop: '10px' }}>
@@ -199,7 +205,7 @@ const ProfilePage: React.FC = () => {
         return <BillsPage />;
       case 'Скидки':
         return <DiscountsPage />;
-        case 'Логи':
+      case 'Логи':
         return <ProfileLogs />;
       case 'Настройки':
         return <ProfileSettings />;

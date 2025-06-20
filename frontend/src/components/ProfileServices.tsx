@@ -16,7 +16,7 @@ interface Service {
   name: string;
   description: string;
   price_per_unit: string;
-  service_type: 'boost' | 'color';
+  service_type: 'boost' | 'color' | 'votes';
   duration_days: number;
   available_colors?: string[];
 }
@@ -32,10 +32,22 @@ const ProfileServices: React.FC<Props> = ({ servers }) => {
 
   useEffect(() => {
     axios.get('/promotions/services/').then(res => {
-      console.log('Полученные услуги:', res.data);
       setServices(res.data);
     });
   }, []);
+
+  const voteServices = services.filter(s => s.service_type === 'votes');
+  const otherServices = services.filter(s => s.service_type !== 'votes');
+
+  if (selectedService?.service_type === 'votes') {
+    return (
+      <ServiceCheckout
+        server={undefined}
+        service={selectedService}
+        onBack={() => setSelectedService(null)}
+      />
+    );
+  }
 
   if (selectedServer && selectedService) {
     return (
@@ -52,23 +64,25 @@ const ProfileServices: React.FC<Props> = ({ servers }) => {
       <h2>Услуги сервера</h2>
 
       {!selectedServer ? (
-        <div className="server-select">
-          <label htmlFor="server">Выберите сервер:</label>
-          <select
-            id="server"
-            onChange={(e) => {
-              const selected = servers.find(s => s.id === parseInt(e.target.value));
-              if (selected) setSelectedServer(selected);
-            }}
-          >
-            <option value="">-- Выберите --</option>
-            {servers.map(server => (
-              <option key={server.id} value={server.id}>
-                {server.name} ({server.ip}:{server.port})
-              </option>
-            ))}
-          </select>
-        </div>
+        <>
+          <div className="server-select">
+            <label htmlFor="server">Выберите сервер:</label>
+            <select
+              id="server"
+              onChange={(e) => {
+                const selected = servers.find((s: Server) => s.id === parseInt(e.target.value));
+                if (selected) setSelectedServer(selected);
+              }}
+            >
+              <option value="">-- Выберите --</option>
+              {servers.map((server: Server) => (
+                <option key={server.id} value={server.id}>
+                  {server.name} ({server.ip}:{server.port})
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
       ) : (
         <>
           <p><strong>СЕРВЕР:</strong> {selectedServer.name}</p>
@@ -78,7 +92,7 @@ const ProfileServices: React.FC<Props> = ({ servers }) => {
 
           <h4>Покупка услуг</h4>
           <div className="service-list">
-            {services.map(service => (
+            {otherServices.map(service => (
               <div key={service.id} className="service-card">
                 <strong>{service.name}</strong>
                 <p>{service.description}</p>
@@ -89,6 +103,27 @@ const ProfileServices: React.FC<Props> = ({ servers }) => {
               </div>
             ))}
           </div>
+
+          {voteServices.length > 0 && (
+            <>
+              <h4 style={{ marginTop: '40px' }}>Покупка голосов</h4>
+              <div className="service-list">
+                {voteServices.map(service => (
+                  <div key={service.id} className="service-card votes-card">
+                    <strong>{service.name}</strong>
+                    <p>{service.description}</p>
+                    <p>от {service.price_per_unit} руб</p>
+                    <button
+                      className="buy-button"
+                      onClick={() => setSelectedService(service)}
+                    >
+                      Купить голоса
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

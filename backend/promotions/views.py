@@ -9,7 +9,10 @@ from servers.models import Server
 from .serializers import ServiceSerializer, ServicePurchaseSerializer, ServerServiceSerializer
 from decimal import Decimal
 import hashlib
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view
 from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.utils import timezone
@@ -260,9 +263,7 @@ class PurchasedServiceViewSet(viewsets.ReadOnlyModelViewSet):
         if server_id:
             queryset = queryset.filter(server__id=server_id)
         return queryset.order_by('-purchased_at')
-    
 
-from rest_framework.permissions import AllowAny
 
 class ListingServicesView(APIView):
     permission_classes = [AllowAny]
@@ -271,3 +272,80 @@ class ListingServicesView(APIView):
         services = Service.objects.filter(show_in_listing=True).order_by('priority')
         data = ListingServiceSerializer(services, many=True).data
         return Response(data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def purchase_votes(request):
+    user: CustomUser = request.user
+    votes_quantity = int(request.data.get('votes', 0))
+    use_balance = request.data.get('use_balance', False)
+
+    if votes_quantity <= 0:
+        return Response({'detail': 'Укажите количество голосов > 0'}, status=400)
+
+    total_price = votes_quantity  # 1 голос = 1 руб
+
+    if use_balance:
+        if user.balance < total_price:
+            return Response({'detail': 'Недостаточно средств на балансе'}, status=400)
+        user.balance -= total_price
+        user.votes_balance += votes_quantity
+        user.save()
+        return Response({'success': True, 'detail': f'✅ Куплено {votes_quantity} голосов с баланса'}, status=200)
+    else:
+        return Response({'detail': '🔗 Перенаправляем на Робокассу'}, status=202)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def pay_from_balance(request):
+    user: CustomUser = request.user
+
+    service_id = request.data.get('service_id')
+    server_id = request.data.get('server_id')  # может быть null
+    quantity = int(request.data.get('quantity', 1))
+    color = request.data.get('color')
+
+    service = get_object_or_404(Service, id=service_id)
+    total_price = Decimal(service.price_per_unit) * quantity
+
+    if user.balance < total_price:
+        return Response({'detail': 'Недостаточно средств на балансе'}, status=400)
+
+    # Списание
+    user.balance -= total_price
+    user.save()
+
+    if service.service_type in ['boost', 'color']:
+        if not server_id:
+            return Response({'detail': 'Не указан сервер'}, status=400)
+
+        server = get_object_or_404(Server, id=server_id, owner=user)
+
+        if service.service_type == 'color' and color:
+            server.color = color
+            server.save()
+
+        # Прочая логика для boost при необходимости
+
+    elif service.service_type == 'votes':
+        # Голоса начисляются серверу
+        server = Server.objects.filter(owner=user).first()
+        if not server:
+            return Response({'detail': 'У вас нет сервера'}, status=400)
+
+        server.votes_count += quantity
+        server.save()
+
+    # Логирование покупки
+    PurchasedService.objects.create(
+        user=user,
+        server=server if service.service_type != 'votes' else None,
+        service=service,
+        quantity=quantity,
+        total_price=total_price,
+        status='completed'
+    )
+
+    return Response({'success': True})

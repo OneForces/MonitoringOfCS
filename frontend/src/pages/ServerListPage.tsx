@@ -112,7 +112,7 @@ const ServerListPage: React.FC = () => {
         servers={filteredServers}
         sort={sort}
         filter={filter}
-        onVote={() => fetchServers()} // 👈 теперь обновление работает
+        onVote={() => fetchServers()} // ✅ обновляем при голосе
       />
 
       <Pagination

@@ -13,13 +13,15 @@ interface Server {
 interface Service {
   id: number;
   name: string;
+  description: string;
   price_per_unit: string;
-  service_type: 'boost' | 'color';
+  service_type: 'boost' | 'color' | 'votes';
+  duration_days: number;
   available_colors?: string[];
 }
 
 interface Props {
-  server: Server;
+  server?: Server;
   service: Service;
   onBack: () => void;
 }
@@ -31,25 +33,40 @@ const ServiceCheckout: React.FC<Props> = ({ server, service, onBack }) => {
 
   const handleBalancePayment = async () => {
     try {
-      const res = await axios.post('/promotions/pay-from-balance/', {
-        server_id: server.id,
-        service_id: service.id,
-        quantity,
-        color: service.service_type === 'color' ? color : null,
-      }, {
-        headers: {
-          Authorization: `Token ${localStorage.getItem('token')}`,
-        },
-      });
+      let res;
 
-      if (res.data.success) {
+      if (service.service_type === 'votes') {
+        // Покупка голосов
+        res = await axios.post('/promotions/purchase/votes/', {
+          votes: quantity,
+          use_balance: true
+        }, {
+          headers: {
+            Authorization: `Token ${localStorage.getItem('token')}`,
+          },
+        });
+      } else {
+        // Обычные услуги
+        res = await axios.post('/promotions/pay-from-balance/', {
+          server_id: server?.id ?? null,
+          service_id: service.id,
+          quantity,
+          color: service.service_type === 'color' ? color : null,
+        }, {
+          headers: {
+            Authorization: `Token ${localStorage.getItem('token')}`,
+          },
+        });
+      }
+
+      if (res.data.success || res.status === 200) {
         setSuccessMessage('✅ Услуга успешно активирована с баланса!');
         setTimeout(() => {
           setSuccessMessage('');
           onBack();
         }, 2000);
       } else {
-        alert('Ошибка при оплате с баланса');
+        alert(res.data?.detail || 'Ошибка при оплате с баланса');
       }
     } catch (err: any) {
       alert(err.response?.data?.detail || 'Ошибка при оплате с баланса');
@@ -59,7 +76,11 @@ const ServiceCheckout: React.FC<Props> = ({ server, service, onBack }) => {
   return (
     <div className="service-checkout">
       <h3>Покупка услуги</h3>
-      <p><strong>СЕРВЕР:</strong> {server.name}</p>
+      {server ? (
+        <p><strong>СЕРВЕР:</strong> {server.name}</p>
+      ) : (
+        <p><strong>Тип:</strong> Покупка голосов</p>
+      )}
       <p><strong>УСЛУГА:</strong> {service.name}</p>
 
       {service.service_type === 'color' && (
@@ -78,18 +99,18 @@ const ServiceCheckout: React.FC<Props> = ({ server, service, onBack }) => {
         </>
       )}
 
-      {service.service_type === 'boost' && (
+      {service.service_type === 'boost' || service.service_type === 'votes' ? (
         <>
           <p>Выберите количество:</p>
           <select value={quantity} onChange={e => setQuantity(Number(e.target.value))}>
-            {[1, 3, 5, 11, 30, 50].map(q => (
+            {[1, 3, 5, 11, 30, 50, 100].map(q => (
               <option key={q} value={q}>
-                {q} круг{q > 1 ? 'ов' : ''} — {Number(service.price_per_unit) * q} руб
+                {q} шт. — {Number(service.price_per_unit) * q} руб
               </option>
             ))}
           </select>
         </>
-      )}
+      ) : null}
 
       <p className="total">Итого: {Number(service.price_per_unit) * quantity} руб</p>
 

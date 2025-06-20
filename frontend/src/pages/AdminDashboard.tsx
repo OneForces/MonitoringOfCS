@@ -16,19 +16,23 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
+      console.warn("❌ Токен отсутствует");
       navigate('/');
       return;
     }
 
-    // Распарсим payload из JWT
     const payloadBase64 = token.split('.')[1];
     try {
       const decodedPayload = JSON.parse(atob(payloadBase64));
+      console.log("✅ JWT payload:", decodedPayload);
+
       if (!decodedPayload.is_superuser) {
+        console.warn("❌ Пользователь НЕ суперюзер");
         navigate('/');
         return;
       }
     } catch (e) {
+      console.error("❌ Ошибка при декодировании JWT:", e);
       navigate('/');
       return;
     }
@@ -38,8 +42,12 @@ const AdminDashboard: React.FC = () => {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then(res => setStats(res.data))
+      .then(res => {
+        console.log("✅ Данные admin-stats получены:", res.data);
+        setStats(res.data);
+      })
       .catch(err => {
+        console.warn("❌ Ошибка при запросе admin-stats", err);
         if (err.response?.status === 403 || err.response?.status === 401) {
           navigate('/');
         }

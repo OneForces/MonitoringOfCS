@@ -183,3 +183,19 @@ button.delete-button {
 .promote-button:hover {
   background-color: #009900;
 }
+
+.buy-votes {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 2rem;
+  background: #f9f9f9;
+}
+.buy-votes input[type='number'] {
+  width: 80px;
+  margin-left: 0.5rem;
+}
+.vote-message {
+  margin-top: 0.5rem;
+  color: #333;
+}

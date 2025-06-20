@@ -26,5 +26,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         token['username'] = user.username
-        token['is_superuser'] = user.is_superuser  # ✅ добавляем флаг в payload
+        token['is_superuser'] = user.is_superuser  # ✅ для фронта
         return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['username'] = self.user.username
+        data['is_superuser'] = self.user.is_superuser  # ✅ ключевая строка
+        return data

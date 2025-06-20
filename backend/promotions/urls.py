@@ -12,7 +12,8 @@ from .views import (
     UserBalanceView,
     BalancePaymentView,
     PurchasedServiceViewSet,
-    ListingServicesView
+    ListingServicesView,
+    purchase_votes,
 )
 
 
@@ -33,4 +34,5 @@ urlpatterns = [
     path("pay-from-balance/", BalancePaymentView.as_view()),
     path('', include(router.urls)),
     path('listing-services/', ListingServicesView.as_view(), name='listing-services'),
+    path('purchase/votes/', purchase_votes, name='purchase-votes'),
 ]

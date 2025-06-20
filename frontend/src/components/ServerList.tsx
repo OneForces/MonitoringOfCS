@@ -1,5 +1,6 @@
+// src/components/ServerList.tsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // ✅ Добавлено
+import { Link } from 'react-router-dom';
 import './ServerList.css';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -15,7 +16,7 @@ export interface Server {
   country: string;
   isVip?: boolean;
   isOnline: boolean;
-  likes?: number;
+  votes_count?: number; // ✅ заменили likes → votes_count
 }
 
 interface ServerListProps {
@@ -40,7 +41,7 @@ const ServerList: React.FC<ServerListProps> = ({ servers, sort = 'popular', filt
         is_upvote: isUpvote,
       });
       setMessages((prev) => ({ ...prev, [serverId]: response.data.detail }));
-      onVote?.(serverId);
+      onVote?.(serverId); // 🔄 обновить список серверов после голосования
     } catch (err: any) {
       console.error('Ошибка голосования:', err.response?.data);
       const detail = err?.response?.data?.detail || 'Ошибка при голосовании';
@@ -109,7 +110,7 @@ const ServerList: React.FC<ServerListProps> = ({ servers, sort = 'popular', filt
               <div className="vote-controls">
                 <button title="Голос вверх" onClick={() => handleVote(s.id, true)}>➕</button>
                 <button title="Голос вниз" onClick={() => handleVote(s.id, false)}>➖</button>
-                <span className="star">⭐ {s.likes || 0}</span>
+                <span className="star">⭐ {s.votes_count || 0}</span>
               </div>
               {messages[s.id] && <span className="vote-message">{messages[s.id]}</span>}
             </td>

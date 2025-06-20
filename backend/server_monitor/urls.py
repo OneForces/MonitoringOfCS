@@ -1,10 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+
+from users.views import CustomTokenObtainPairView  # 👈 здесь
+from rest_framework_simplejwt.views import TokenRefreshView
 
 def root(request):
     return JsonResponse({"message": "API is running!"})
@@ -16,8 +15,8 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/promotions/', include('promotions.urls')),
     path('api/payments/', include('payments.urls')),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    
+    # 👇 Заменили TokenObtainPairView на кастомную
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

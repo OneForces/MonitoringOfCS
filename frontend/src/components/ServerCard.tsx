@@ -11,7 +11,10 @@ export interface Server {
   players: number;
   maxPlayers: number;
   country: string;
-  isOnline?: boolean;
+  isOnline: boolean;
+  likes?: number; // добавь это
+  upvotes?: number; // и это
+  downvotes?: number; // и это
 }
 
 interface ServerCardProps {

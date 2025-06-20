@@ -1,37 +1,72 @@
-.settings-container {
+.profile-services {
   padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-.settings-forms {
-  display: flex;
-  gap: 40px;
-  justify-content: center;
-  margin-top: 20px;
+.server-select {
+  margin-bottom: 30px;
 }
 
-.settings-block {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 250px;
-  width: 100%;
-}
-
-.settings-block input {
-  padding: 8px;
+.server-select select {
+  padding: 8px 12px;
+  border-radius: 4px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  font-size: 16px;
 }
 
-.settings-block button {
-  padding: 10px;
-  background: linear-gradient(to bottom, #4baee3, #308fc7);
-  color: white;
+.service-back-btn {
+  background-color: #eee;
   border: none;
-  border-radius: 4px;
+  padding: 8px 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  margin-bottom: 20px;
   cursor: pointer;
 }
 
-.settings-block button:hover {
-  background: linear-gradient(to bottom, #3a9ccc, #2678a6);
+.service-list {
+  display: grid;
+  gap: 20px;
+}
+
+.service-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px 20px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.service-card strong {
+  font-size: 18px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.service-card p {
+  margin: 4px 0;
+  color: #333;
+}
+
+.buy-button {
+  background-color: #2765ff;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 500;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.buy-button:hover {
+  background-color: #0044cc;
+}
+
+/* Особый стиль для карточек голосов */
+.votes-card {
+  background: #f8faff;
+  border-left: 4px solid #4a90e2;
 }
