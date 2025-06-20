@@ -1,12 +1,16 @@
+# users/views.py
+
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
-from django.db import IntegrityError
-from .serializers import RegisterSerializer
-from servers.models import Server, Vote  # импортируем модели серверов и голосов
+
+from servers.models import Server, Vote
+from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer
+
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 User = get_user_model()
 
@@ -27,6 +31,9 @@ class CurrentUserAPIView(APIView):
             "username": user.username,
             "email": user.email,
             "is_moderator": user.is_moderator,
+            "votes_balance": user.votes_balance,
+            "balance": str(user.balance),
+            "level": user.level,
         })
 
 
@@ -37,10 +44,8 @@ class VoteServerAPIView(APIView):
         user = request.user
         today = now().date()
 
-        # ⚠️ Читаем поле из JSON тела
         is_upvote = request.data.get("is_upvote", True)
 
-        # Проверяем наличие голоса за сегодня
         already_voted = Vote.objects.filter(
             user=user,
             server_id=server_id,
@@ -58,20 +63,19 @@ class VoteServerAPIView(APIView):
         except Server.DoesNotExist:
             return Response({"detail": "Сервер не найден."}, status=404)
 
-        # Создаём голос с направлением
         Vote.objects.create(user=user, server=server, is_upvote=is_upvote)
-
         return Response({"detail": "Голос успешно засчитан."})
+
 
 class UserBalanceAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        return Response({"balance": str(request.user.balance)})
-    
-from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import CustomTokenObtainPairSerializer
-from .serializers import CustomTokenObtainPairSerializer
+        return Response({
+            "balance": str(request.user.balance),
+            "votes_balance": request.user.votes_balance
+        })
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer

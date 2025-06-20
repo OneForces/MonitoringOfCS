@@ -1,8 +1,17 @@
+# backend/payments/views.py
 from rest_framework import viewsets
-from .models import Payment
-from .models import PurchasedService, DownloadStat
-from .serializers import PaymentSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.contrib.auth import get_user_model
+from django.db import models
+
+from .models import Payment, PurchasedService, ManualDonation, DownloadStat
+from .serializers import PaymentSerializer, ManualDonationSerializer
+from servers.models import Server, Vote  # нужно для начисления голосов
+
+User = get_user_model()
 
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
@@ -12,29 +21,32 @@ class PaymentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import ManualDonation
-from .serializers import ManualDonationSerializer
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_manual_donation(request):
     serializer = ManualDonationSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save(user=request.user)
-        return Response({"status": "ok", "message": "Заявка на донат зарегистрирована."})
+        donation = serializer.save(user=request.user)
+
+        amount_int = int(donation.amount)
+
+        if donation.server:
+            # Создаём реальные записи голосов
+            for _ in range(amount_int):
+                Vote.objects.create(user=request.user, server=donation.server)
+
+            # Обновляем количество голосов на сервере
+            donation.server.votes_count += amount_int
+            donation.server.save()
+
+        # Увеличиваем баланс голосов пользователя
+        request.user.votes_balance += amount_int
+        request.user.save()
+
+        return Response({"status": "ok", "message": f"✅ Начислено {amount_int} голосов."})
     return Response(serializer.errors, status=400)
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser
-from django.contrib.auth import get_user_model
-from django.db import models
-from .models import PurchasedService, DownloadStat
-
-User = get_user_model()
 
 class AdminStatsView(APIView):
     permission_classes = [IsAdminUser]
@@ -51,3 +63,28 @@ class AdminStatsView(APIView):
             "services": services_count,
             "downloads": downloads_count,
         })
+
+
+# ✅ Сигнал для автоматического начисления голосов при покупке услуги "Голоса"
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=PurchasedService)
+def add_votes_on_purchase(sender, instance, created, **kwargs):
+    if created and instance.service.service_type == 'votes':
+        user = instance.user
+        quantity = instance.quantity
+
+        # Прибавляем к голосовому балансу
+        user.votes_balance += quantity
+        user.save()
+
+        # Если сервер указан — обновляем его votes_count и создаём записи
+        if instance.server:
+            instance.server.votes_count += quantity
+            instance.server.save()
+
+            # Создаём записи голосов от system-пользователя
+            system_user, _ = User.objects.get_or_create(username='system', defaults={'password': '!'})
+            for _ in range(quantity):
+                Vote.objects.create(user=system_user, server=instance.server, is_upvote=True)

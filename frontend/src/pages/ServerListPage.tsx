@@ -29,7 +29,7 @@ const ServerListPage: React.FC = () => {
         country: s.country || 'ru',
         isVip: s.is_vip ?? false,
         isOnline: false,
-        votes: s.votes ?? 0, // ✅ правильное поле из API
+        votes: s.votes ?? 0, // правильное поле из API
       }));
 
       await Promise.all(
@@ -55,6 +55,12 @@ const ServerListPage: React.FC = () => {
     } catch (err) {
       console.error('Ошибка при получении серверов:', err);
     }
+  };
+
+  // Функция обновления данных — вызывается после голосования и покупки
+  const reloadData = async () => {
+    await fetchServers();
+    // При необходимости, можно добавить сюда обновление баланса пользователя, если он показывается на странице
   };
 
   useEffect(() => {
@@ -109,12 +115,15 @@ const ServerListPage: React.FC = () => {
         </select>
       </div>
 
+      {/* Передаём reloadData в onVote и в будущий onSuccess покупки */}
       <ServerList
         servers={filteredServers}
         sort={sort}
         filter={filter}
-        onVote={() => fetchServers()} // ✅ обновляем после голосования
+        onVote={() => reloadData()}
       />
+
+      {/* Если в будущем хочешь запускать ServiceCheckout, прокинь сюда onSuccess={reloadData} */}
 
       <Pagination
         currentPage={currentPage}

@@ -1,129 +1,161 @@
-// src/components/ServiceCheckout.tsx
-import React, { useState } from 'react';
-import axios from '../api/axios';
-import './ServiceCheckout.css';
+// src/pages/ServerListPage.tsx
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import ServerList, { Server } from '../components/ServerList';
+import FeaturedServerBlock from '../components/FeaturedServerBlock';
+import Pagination from '../components/Pagination';
+import ServiceCheckout from '../components/ServiceCheckout';
+import api from '../api/axios';
+import './ServerListPage.css';
 
-interface Server {
-  id: number;
-  name: string;
-  ip: string;
-  port: number;
-}
+const ServerListPage: React.FC = () => {
+  const [servers, setServers] = useState<Server[]>([]);
+  const [filteredServers, setFilteredServers] = useState<Server[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sort, setSort] = useState('popular');
+  const [filter, setFilter] = useState('all');
+  const [searchParams] = useSearchParams();
 
-interface Service {
-  id: number;
-  name: string;
-  description: string;
-  price_per_unit: string;
-  service_type: 'boost' | 'color' | 'votes';
-  duration_days: number;
-  available_colors?: string[];
-}
+  // Для покупки
+  const [selectedServer, setSelectedServer] = useState<Server | null>(null);
+  const [selectedService, setSelectedService] = useState<any>(null);
+  const [showCheckout, setShowCheckout] = useState(false);
 
-interface Props {
-  server?: Server;
-  service: Service;
-  onBack: () => void;
-}
-
-const ServiceCheckout: React.FC<Props> = ({ server, service, onBack }) => {
-  const [quantity, setQuantity] = useState(1);
-  const [color, setColor] = useState<string>('');
-  const [successMessage, setSuccessMessage] = useState('');
-
-  const handleBalancePayment = async () => {
+  const fetchServers = async () => {
     try {
-      let res;
+      const res = await api.get('servers/');
+      let baseServers: Server[] = res.data.map((s: any) => ({
+        id: s.id,
+        name: s.name,
+        ip: s.ip,
+        port: String(s.port),
+        map: s.map || '',
+        players: 0,
+        maxPlayers: 0,
+        country: s.country || 'ru',
+        isVip: s.is_vip ?? false,
+        isOnline: false,
+        votes: s.votes ?? 0,
+      }));
 
-      if (service.service_type === 'votes') {
-        // Покупка голосов
-        res = await axios.post('/promotions/purchase/votes/', {
-          votes: quantity,
-          use_balance: true
-        }, {
-          headers: {
-            Authorization: `Token ${localStorage.getItem('token')}`,
-          },
-        });
-      } else {
-        // Обычные услуги
-        res = await axios.post('/promotions/pay-from-balance/', {
-          server_id: server?.id ?? null,
-          service_id: service.id,
-          quantity,
-          color: service.service_type === 'color' ? color : null,
-        }, {
-          headers: {
-            Authorization: `Token ${localStorage.getItem('token')}`,
-          },
-        });
-      }
+      await Promise.all(
+        baseServers.map(async (server: Server, idx: number) => {
+          try {
+            const pingRes = await api.post('/servers/ping/', {
+              ip: server.ip,
+              port: server.port,
+            });
+            if (pingRes.data.ping_success) {
+              baseServers[idx].isOnline = true;
+              baseServers[idx].players = pingRes.data.players || 0;
+              baseServers[idx].maxPlayers = pingRes.data.max_players || 0;
+              baseServers[idx].map = pingRes.data.map || '';
+            }
+          } catch {
+            baseServers[idx].isOnline = false;
+          }
+        })
+      );
 
-      if (res.data.success || res.status === 200) {
-        setSuccessMessage('✅ Услуга успешно активирована с баланса!');
-        setTimeout(() => {
-          setSuccessMessage('');
-          onBack();
-        }, 2000);
-      } else {
-        alert(res.data?.detail || 'Ошибка при оплате с баланса');
-      }
-    } catch (err: any) {
-      alert(err.response?.data?.detail || 'Ошибка при оплате с баланса');
+      setServers(baseServers);
+    } catch (err) {
+      console.error('Ошибка при получении серверов:', err);
     }
   };
 
+  const fetchUserBalance = async () => {
+    try {
+      const res = await api.get('/users/balance/', {
+        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+      });
+      // Можно сохранить баланс в состояние, если нужно
+    } catch (err) {
+      console.error('Ошибка при получении баланса:', err);
+    }
+  };
+
+  // Общий рефреш данных
+  const reloadData = async () => {
+    await fetchServers();
+    await fetchUserBalance();
+  };
+
+  useEffect(() => {
+    reloadData();
+  }, []);
+
+  useEffect(() => {
+    const search = searchParams.get('search')?.trim().toLowerCase() || '';
+
+    let filtered = [...servers].filter((server) => {
+      const matchesSearch = !search || server.name.toLowerCase().includes(search);
+      const matchesFilter =
+        filter === 'all' ||
+        (filter === 'vip' && server.isVip) ||
+        (filter === 'onlineOnly' && server.isOnline);
+      return matchesSearch && matchesFilter;
+    });
+
+    if (sort === 'popular') {
+      filtered.sort((a, b) => b.players - a.players);
+    } else if (sort === 'new') {
+      filtered.sort((a, b) => b.id - a.id);
+    } else if (sort === 'online') {
+      filtered.sort((a, b) => Number(b.isOnline) - Number(a.isOnline));
+    } else if (sort === 'alphabetical') {
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    setFilteredServers(filtered);
+  }, [servers, searchParams, filter, sort]);
+
   return (
-    <div className="service-checkout">
-      <h3>Покупка услуги</h3>
-      {server ? (
-        <p><strong>СЕРВЕР:</strong> {server.name}</p>
-      ) : (
-        <p><strong>Тип:</strong> Покупка голосов</p>
-      )}
-      <p><strong>УСЛУГА:</strong> {service.name}</p>
+    <div className="server-list-page">
+      <FeaturedServerBlock />
 
-      {service.service_type === 'color' && (
-        <>
-          <p>Выберите цвет:</p>
-          <div className="color-options">
-            {service.available_colors?.map((c) => (
-              <button
-                key={c}
-                className={color === c ? 'selected' : ''}
-                style={{ backgroundColor: c }}
-                onClick={() => setColor(c)}
-              />
-            ))}
-          </div>
-        </>
-      )}
+      <h2 className="page-title">Листинг серверов CS 1.6</h2>
 
-      {service.service_type === 'boost' || service.service_type === 'votes' ? (
-        <>
-          <p>Выберите количество:</p>
-          <select value={quantity} onChange={e => setQuantity(Number(e.target.value))}>
-            {[1, 3, 5, 11, 30, 50, 100].map(q => (
-              <option key={q} value={q}>
-                {q} шт. — {Number(service.price_per_unit) * q} руб
-              </option>
-            ))}
-          </select>
-        </>
-      ) : null}
+      <div className="filters">
+        <label>Сортировка:</label>
+        <select value={sort} onChange={(e) => setSort(e.target.value)}>
+          <option value="popular">По популярности</option>
+          <option value="new">Новые</option>
+          <option value="online">Онлайн</option>
+          <option value="alphabetical">По алфавиту</option>
+        </select>
 
-      <p className="total">Итого: {Number(service.price_per_unit) * quantity} руб</p>
-
-      {successMessage && <div className="success-message">{successMessage}</div>}
-
-      <div className="action-buttons">
-        <button className="balance-pay-button" onClick={handleBalancePayment}>
-          Оплатить с баланса
-        </button>
-        <button className="back-button" onClick={onBack}>← Назад</button>
+        <label>Фильтр:</label>
+        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <option value="all">Все</option>
+          <option value="vip">VIP</option>
+          <option value="onlineOnly">Только онлайн</option>
+        </select>
       </div>
+
+      {!showCheckout ? (
+        <>
+          <ServerList
+            servers={filteredServers}
+            sort={sort}
+            filter={filter}
+            onVote={() => reloadData()}
+          />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={216}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+        </>
+      ) : (
+        <ServiceCheckout
+          server={selectedServer ?? undefined}
+          service={selectedService!}
+          onBack={() => setShowCheckout(false)}
+          onSuccess={reloadData}
+        />
+      )}
     </div>
   );
 };
 
-export default ServiceCheckout;
+export default ServerListPage;

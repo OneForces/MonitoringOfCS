@@ -1,6 +1,8 @@
 # users/serializers.py
+
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 User = get_user_model()
 
@@ -19,18 +21,23 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         return user
 
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
         token['username'] = user.username
-        token['is_superuser'] = user.is_superuser  # ✅ для фронта
+        token['is_superuser'] = user.is_superuser
+        token['is_moderator'] = getattr(user, 'is_moderator', False)
+        token['votes_balance'] = getattr(user, 'votes_balance', 0)
+        token['balance'] = str(getattr(user, 'balance', 0))
         return token
 
     def validate(self, attrs):
         data = super().validate(attrs)
         data['username'] = self.user.username
-        data['is_superuser'] = self.user.is_superuser  # ✅ ключевая строка
+        data['is_superuser'] = self.user.is_superuser
+        data['is_moderator'] = getattr(self.user, 'is_moderator', False)
+        data['votes_balance'] = getattr(self.user, 'votes_balance', 0)
+        data['balance'] = str(getattr(self.user, 'balance', 0))
         return data

@@ -1,17 +1,20 @@
+# servers/views.py
+
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.utils.timezone import now, timedelta
-
-from .models import Server
+from django.http import HttpResponse
+from django.db.models import Count
+from .models import Server, DownloadStat
 from .serializers import ServerSerializer
 from .steam_ping import ping_server
 
 
 class ServerViewSet(viewsets.ModelViewSet):
-    queryset = Server.objects.all()
+    queryset = Server.objects.all().prefetch_related('votes')
     serializer_class = ServerSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -75,35 +78,6 @@ class ServerStatsAPIView(APIView):
         }
         return Response(data)
 
-# servers/views.py
-from django.http import HttpResponse
-from django.utils.timezone import now
-from .models import DownloadStat
-
-def download_build(request, build_name):
-    DownloadStat.objects.create(
-        ip=get_client_ip(request),
-        user_agent=request.META.get('HTTP_USER_AGENT', ''),
-        build_name=build_name
-    )
-
-    # Здесь путь к сборке можно кастомизировать
-    file_path = f'static/builds/{build_name}.zip'
-    with open(file_path, 'rb') as f:
-        response = HttpResponse(f.read(), content_type='application/zip')
-        response['Content-Disposition'] = f'attachment; filename="{build_name}.zip"'
-        return response
-
-def get_client_ip(request):
-    x_forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded:
-        return x_forwarded.split(',')[0]
-    return request.META.get('REMOTE_ADDR')
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import DownloadStat
-from django.db.models import Count
 
 class DownloadStatsView(APIView):
     def get(self, request):
@@ -114,3 +88,26 @@ class DownloadStatsView(APIView):
             .order_by('-total')
         )
         return Response(stats)
+
+
+def download_build(request, build_name):
+    DownloadStat.objects.create(
+        ip=get_client_ip(request),
+        user_agent=request.META.get('HTTP_USER_AGENT', ''),
+        build_name=build_name
+    )
+    file_path = f'static/builds/{build_name}.zip'
+    try:
+        with open(file_path, 'rb') as f:
+            response = HttpResponse(f.read(), content_type='application/zip')
+            response['Content-Disposition'] = f'attachment; filename="{build_name}.zip"'
+            return response
+    except FileNotFoundError:
+        return HttpResponse("Сборка не найдена", status=404)
+
+
+def get_client_ip(request):
+    x_forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded:
+        return x_forwarded.split(',')[0]
+    return request.META.get('REMOTE_ADDR')

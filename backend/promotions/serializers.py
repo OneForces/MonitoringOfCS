@@ -1,8 +1,11 @@
+# promotions/serializers.py
+
 from rest_framework import serializers
 from .models import Service, ServerService, PurchasedService
 from servers.models import Server
 
-# 🎯 Для отображения основной информации об услуге
+
+# 🎯 Основная информация об услуге
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
@@ -16,30 +19,34 @@ class ServiceSerializer(serializers.ModelSerializer):
             'available_colors'
         ]
 
-# 🎯 Для отображения привязки сервера к услуге
+
+# 🎯 Привязка сервера к услуге (активные покупки)
 class ServerServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServerService
         fields = '__all__'
 
-# 🎯 Для оформления покупки услуги
+
+# 🎯 Сериализатор для покупки услуги
 class ServicePurchaseSerializer(serializers.Serializer):
-    server_id = serializers.IntegerField()
+    server_id = serializers.IntegerField(required=False)  # не обязателен для голосов
     service_id = serializers.IntegerField()
     quantity = serializers.IntegerField(required=False, default=1)
     color = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
-# 🎯 Полная информация о покупке (для логов, профиля)
+
+# 🎯 Информация о совершённой покупке
 class PurchasedServiceSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     service = serializers.StringRelatedField()
-    server = serializers.StringRelatedField()
+    server = serializers.StringRelatedField(allow_null=True)
 
     class Meta:
         model = PurchasedService
-        fields = ['id', 'user', 'server', 'service', 'purchased_at']
+        fields = ['id', 'user', 'server', 'service', 'quantity', 'purchased_at']
 
-# 🎯 Краткая информация о сервере в листинге
+
+# 🎯 Сериализатор для отображения сервера в списке услуги
 class ListingServerSerializer(serializers.ModelSerializer):
     server_name = serializers.CharField(source='server.name')
     end_date = serializers.DateTimeField(format='%d.%m.%Y [%H:%M]')
@@ -48,7 +55,8 @@ class ListingServerSerializer(serializers.ModelSerializer):
         model = ServerService
         fields = ['server_name', 'end_date']
 
-# 🎯 Сериализатор для вкладки "Листинг услуг"
+
+# 🎯 Список доступных услуг (листинг)
 class ListingServiceSerializer(serializers.ModelSerializer):
     used = serializers.SerializerMethodField()
     servers = serializers.SerializerMethodField()

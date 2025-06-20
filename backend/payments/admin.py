@@ -24,6 +24,6 @@ class ManualDonationAdmin(admin.ModelAdmin):
 
 @admin.register(DownloadStat)
 class DownloadStatAdmin(admin.ModelAdmin):
-    list_display = ('ip', 'user_agent', 'timestamp', 'build')
-    list_filter = ('build', 'timestamp')
+    list_display = ('ip', 'user_agent', 'downloaded_at', 'build')  # ✅ заменено
+    list_filter = ('build', 'downloaded_at')                        # ✅ заменено
     search_fields = ('ip', 'user_agent')

@@ -330,13 +330,20 @@ def pay_from_balance(request):
         # Прочая логика для boost при необходимости
 
     elif service.service_type == 'votes':
-        # Голоса начисляются серверу
         server = Server.objects.filter(owner=user).first()
         if not server:
             return Response({'detail': 'У вас нет сервера'}, status=400)
 
-        server.votes_count += quantity
-        server.save()
+        from servers.models import Vote
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        # 🔹 создаём фейкового пользователя "system", если его ещё нет
+        system_user, _ = User.objects.get_or_create(username='system', defaults={'password': '!'})
+
+        for _ in range(quantity):
+            Vote.objects.create(user=system_user, server=server, is_upvote=True)
+
 
     # Логирование покупки
     PurchasedService.objects.create(
