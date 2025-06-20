@@ -1,29 +1,21 @@
-# servers/serializers.py
-
+# backend/servers/serializers.py
 from rest_framework import serializers
 from .models import Server, Vote
 
 class ServerSerializer(serializers.ModelSerializer):
-    likes = serializers.SerializerMethodField()
     upvotes = serializers.SerializerMethodField()
-    downvotes = serializers.SerializerMethodField()
     votes = serializers.SerializerMethodField()
 
     class Meta:
         model = Server
-        fields = '__all__'
-        read_only_fields = ['owner', 'created_at']
+        fields = ['id', 'name', 'ip', 'port', 'votes_count', 'upvotes', 'votes']
 
     def get_upvotes(self, obj):
+        # Только реальные лайки + донатные (votes_count)
         real_upvotes = obj.votes.filter(is_upvote=True).exclude(user__username='system').count()
-        fake_upvotes = obj.votes.filter(is_upvote=True, user__username='system').count()
-        return real_upvotes + fake_upvotes + obj.votes_count
-
-    def get_downvotes(self, obj):
-        return obj.votes.filter(is_upvote=False).count()
-
-    def get_likes(self, obj):
-        return self.get_upvotes(obj) - self.get_downvotes(obj)
+        return real_upvotes + obj.votes_count
 
     def get_votes(self, obj):
-        return self.get_upvotes(obj)
+        # Аналогично, только сумма
+        real_upvotes = obj.votes.filter(is_upvote=True).exclude(user__username='system').count()
+        return real_upvotes + obj.votes_count

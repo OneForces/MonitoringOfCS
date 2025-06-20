@@ -13,6 +13,7 @@ import BillsPage from '../components/BillsPage';
 import DiscountsPage from '../components/DiscountsPage';
 import ProfileLogs from '../components/ProfileLogs';
 import ProfileSettings from '../components/ProfileSettings';
+import { Server as FullServer } from '../components/ServiceCheckout';
 
 interface Server {
   id: number;
@@ -194,7 +195,23 @@ const ProfilePage: React.FC = () => {
         );
 
       case 'Услуги':
-        return <ProfileServices servers={servers} />;
+        return (
+          <ProfileServices
+            servers={servers.map((s) => ({
+              id: s.id,
+              name: s.name,
+              ip: String(s.ip),
+              port: String(s.port),
+              map: s.map || '',
+              players: s.current_players ?? 0,
+              maxPlayers: s.max_players ?? 0,
+              country: 'ru',
+              isVip: false,
+              isOnline: s.is_online ?? false,
+              votes: 0,
+            }))}
+          />
+        );
       case 'Очередь на Будь первым':
         return <QueueBoostPage />;
       case 'Очередь на Премиум':

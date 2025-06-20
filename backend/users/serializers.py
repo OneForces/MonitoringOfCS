@@ -3,6 +3,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import CustomUser
 
 User = get_user_model()
 
@@ -41,3 +42,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['votes_balance'] = getattr(self.user, 'votes_balance', 0)
         data['balance'] = str(getattr(self.user, 'balance', 0))
         return data
+
+class UserSerializer(serializers.ModelSerializer):
+    votes_balance = serializers.IntegerField(read_only=True)
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'votes_balance']

@@ -4,20 +4,7 @@ import { Link } from 'react-router-dom';
 import './ServerList.css';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
-
-export interface Server {
-  id: number;
-  name: string;
-  ip: string;
-  port: string;
-  map: string;
-  players: number;
-  maxPlayers: number;
-  country: string;
-  isVip?: boolean;
-  isOnline: boolean;
-  votes: number; // ✅ актуальное поле из API
-}
+import { Server } from './ServiceCheckout'; // ❗ оставили только Server
 
 interface ServerListProps {
   servers: Server[];
@@ -26,7 +13,12 @@ interface ServerListProps {
   onVote?: (serverId: number) => void;
 }
 
-const ServerList: React.FC<ServerListProps> = ({ servers, sort = 'popular', filter = 'all', onVote }) => {
+const ServerList: React.FC<ServerListProps> = ({
+  servers,
+  sort = 'popular',
+  filter = 'all',
+  onVote,
+}) => {
   const { isAuthenticated } = useAuth();
   const [messages, setMessages] = useState<Record<number, string>>({});
 

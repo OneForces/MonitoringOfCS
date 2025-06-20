@@ -22,30 +22,31 @@ class PaymentViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-@api_view(["POST"])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_manual_donation(request):
     serializer = ManualDonationSerializer(data=request.data)
     if serializer.is_valid():
         donation = serializer.save(user=request.user)
-
         amount_int = int(donation.amount)
 
+        # Начисляем голоса серверу, если выбран
         if donation.server:
-            # Создаём реальные записи голосов
             for _ in range(amount_int):
                 Vote.objects.create(user=request.user, server=donation.server)
-
-            # Обновляем количество голосов на сервере
             donation.server.votes_count += amount_int
             donation.server.save()
 
-        # Увеличиваем баланс голосов пользователя
+        # Всегда увеличиваем баланс голосов пользователя
         request.user.votes_balance += amount_int
         request.user.save()
 
-        return Response({"status": "ok", "message": f"✅ Начислено {amount_int} голосов."})
-    return Response(serializer.errors, status=400)
+        donation.status = "confirmed"
+        donation.save(update_fields=["status"])
+
+        return Response({"status": "ok", "message": f"✅ Начислено {amount_int} голосов серверу и на ваш баланс."})
+    else:
+        return Response(serializer.errors, status=400)
 
 
 class AdminStatsView(APIView):

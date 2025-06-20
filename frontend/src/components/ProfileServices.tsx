@@ -1,34 +1,18 @@
 // src/components/ProfileServices.tsx
 import React, { useEffect, useState } from 'react';
 import axios from '../api/axios';
-import ServiceCheckout from './ServiceCheckout';
+import ServiceCheckout, { Server as FullServer, Service as FullService } from './ServiceCheckout';
 import './ProfileServices.css';
 
-interface Server {
-  id: number;
-  name: string;
-  ip: string;
-  port: number;
-}
-
-interface Service {
-  id: number;
-  name: string;
-  description: string;
-  price_per_unit: string;
-  service_type: 'boost' | 'color' | 'votes';
-  duration_days: number;
-  available_colors?: string[];
-}
-
+// Используем только типы из ServiceCheckout!
 interface Props {
-  servers: Server[];
+  servers: FullServer[];
 }
 
 const ProfileServices: React.FC<Props> = ({ servers }) => {
-  const [services, setServices] = useState<Service[]>([]);
-  const [selectedServer, setSelectedServer] = useState<Server | null>(null);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [services, setServices] = useState<FullService[]>([]);
+  const [selectedServer, setSelectedServer] = useState<FullServer | null>(null);
+  const [selectedService, setSelectedService] = useState<FullService | null>(null);
 
   useEffect(() => {
     axios.get('/promotions/services/').then(res => {
@@ -70,12 +54,12 @@ const ProfileServices: React.FC<Props> = ({ servers }) => {
             <select
               id="server"
               onChange={(e) => {
-                const selected = servers.find((s: Server) => s.id === parseInt(e.target.value));
+                const selected = servers.find((s: FullServer) => s.id === parseInt(e.target.value));
                 if (selected) setSelectedServer(selected);
               }}
             >
               <option value="">-- Выберите --</option>
-              {servers.map((server: Server) => (
+              {servers.map((server: FullServer) => (
                 <option key={server.id} value={server.id}>
                   {server.name} ({server.ip}:{server.port})
                 </option>

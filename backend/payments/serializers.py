@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 from .models import Payment, ManualDonation
-
+from servers.models import Server
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,7 +12,9 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 
 class ManualDonationSerializer(serializers.ModelSerializer):
+    server = serializers.PrimaryKeyRelatedField(required=False, allow_null=True, queryset=Server.objects.all())
+
     class Meta:
         model = ManualDonation
-        fields = ['id', 'user', 'server', 'amount', 'comment', 'status', 'created_at', 'payment_code']
-        read_only_fields = ['status', 'created_at', 'user', 'payment_code']
+        fields = ['id', 'user', 'server', 'amount', 'comment', 'status', 'created_at']
+        read_only_fields = ['id', 'user', 'status', 'created_at']

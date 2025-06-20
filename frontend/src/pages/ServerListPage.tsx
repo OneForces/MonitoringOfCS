@@ -1,9 +1,10 @@
 // src/pages/ServerListPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import ServerList, { Server } from '../components/ServerList';
+import ServerList from '../components/ServerList';
 import FeaturedServerBlock from '../components/FeaturedServerBlock';
 import Pagination from '../components/Pagination';
+import ServiceCheckout, { Service, Server } from '../components/ServiceCheckout';
 import api from '../api/axios';
 import './ServerListPage.css';
 
@@ -14,6 +15,10 @@ const ServerListPage: React.FC = () => {
   const [sort, setSort] = useState('popular');
   const [filter, setFilter] = useState('all');
   const [searchParams] = useSearchParams();
+
+  const [selectedServer, setSelectedServer] = useState<Server | undefined>(undefined);
+  const [selectedService, setSelectedService] = useState<Service | undefined>(undefined);
+  const [showCheckout, setShowCheckout] = useState(false);
 
   const fetchServers = async () => {
     try {
@@ -29,7 +34,7 @@ const ServerListPage: React.FC = () => {
         country: s.country || 'ru',
         isVip: s.is_vip ?? false,
         isOnline: false,
-        votes: s.votes ?? 0, // правильное поле из API
+        votes: s.votes ?? 0,
       }));
 
       await Promise.all(
@@ -57,14 +62,23 @@ const ServerListPage: React.FC = () => {
     }
   };
 
-  // Функция обновления данных — вызывается после голосования и покупки
+  const fetchUserBalance = async () => {
+    try {
+      await api.get('/users/balance/', {
+        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+      });
+    } catch (err) {
+      console.error('Ошибка при получении баланса:', err);
+    }
+  };
+
   const reloadData = async () => {
     await fetchServers();
-    // При необходимости, можно добавить сюда обновление баланса пользователя, если он показывается на странице
+    await fetchUserBalance();
   };
 
   useEffect(() => {
-    fetchServers();
+    reloadData();
   }, []);
 
   useEffect(() => {
@@ -115,21 +129,30 @@ const ServerListPage: React.FC = () => {
         </select>
       </div>
 
-      {/* Передаём reloadData в onVote и в будущий onSuccess покупки */}
-      <ServerList
-        servers={filteredServers}
-        sort={sort}
-        filter={filter}
-        onVote={() => reloadData()}
-      />
-
-      {/* Если в будущем хочешь запускать ServiceCheckout, прокинь сюда onSuccess={reloadData} */}
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={216}
-        onPageChange={(page) => setCurrentPage(page)}
-      />
+      {!showCheckout ? (
+        <>
+          <ServerList
+            servers={filteredServers}
+            sort={sort}
+            filter={filter}
+            onVote={() => reloadData()}
+          />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={216}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+        </>
+      ) : (
+        selectedServer && selectedService && (
+          <ServiceCheckout
+            server={selectedServer}
+            service={selectedService}
+            onBack={() => setShowCheckout(false)}
+            onSuccess={reloadData}
+          />
+        )
+      )}
     </div>
   );
 };
