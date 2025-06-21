@@ -1,13 +1,14 @@
-# servers/views.py
+# backend/servers/views.py
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.utils.timezone import now, timedelta
+from django.utils.timezone import now, timedelta, localtime
 from django.http import HttpResponse
 from django.db.models import Count
+from django.db.models.functions import TruncDate
 from .models import Server, DownloadStat
 from .serializers import ServerSerializer
 from .steam_ping import ping_server
@@ -83,11 +84,25 @@ class DownloadStatsView(APIView):
     def get(self, request):
         stats = (
             DownloadStat.objects
-            .values('build_name')
+            .annotate(date=TruncDate('downloaded_at'))
+            .values('date')
             .annotate(total=Count('id'))
-            .order_by('-total')
+            .order_by('date')
         )
         return Response(stats)
+
+
+class DailyDownloadStatsView(APIView):
+    def get(self, request):
+        downloads = DownloadStat.objects.all()
+        stats = {}
+
+        for d in downloads:
+            local_date = localtime(d.downloaded_at).date().isoformat()
+            stats[local_date] = stats.get(local_date, 0) + 1
+
+        result = [{"date": date, "total": count} for date, count in sorted(stats.items())]
+        return Response(result)
 
 
 def download_build(request, build_name):
@@ -111,29 +126,3 @@ def get_client_ip(request):
     if x_forwarded:
         return x_forwarded.split(',')[0]
     return request.META.get('REMOTE_ADDR')
-
-
-# backend/servers/views.py
-
-from django.utils.timezone import localtime
-from django.db.models import Count
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import DownloadStat
-
-class DailyDownloadStatsView(APIView):
-    def get(self, request):
-        # Загружаем все записи
-        downloads = DownloadStat.objects.all()
-        
-        # Группируем вручную по локальной дате
-        stats = {}
-        for d in downloads:
-            local_date = localtime(d.downloaded_at).date().isoformat()
-            stats[local_date] = stats.get(local_date, 0) + 1
-
-        # Преобразуем в список
-        result = [{"date": date, "total": count} for date, count in sorted(stats.items())]
-        return Response(result)
-    
-    

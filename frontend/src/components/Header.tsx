@@ -1,13 +1,26 @@
+// frontend/src/components/Header.tsx
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
 import DownloadModal from './DownloadModal';
+import axios from '../api/axios'; // ✅ для запроса статистики
 
 const Header: React.FC = () => {
   const [query, setQuery] = useState('');
   const [isDownloadModalOpen, setDownloadModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // ✅ функция обновления статистики
+  const fetchDownloadStats = async () => {
+    try {
+      const response = await axios.get('/api/downloads/stats/');
+      console.log('Обновлённая статистика:', response.data);
+      // ❗ здесь можно прокинуть данные в глобальный стейт или вызвать обновление компонента-графика
+    } catch (error) {
+      console.error('Ошибка при получении статистики скачиваний:', error);
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +108,10 @@ const Header: React.FC = () => {
       </nav>
 
       {isDownloadModalOpen && (
-        <DownloadModal onClose={() => setDownloadModalOpen(false)} />
+        <DownloadModal
+          onClose={() => setDownloadModalOpen(false)}
+          onDownload={fetchDownloadStats} // ✅ обновление графика после скачивания
+        />
       )}
     </header>
   );

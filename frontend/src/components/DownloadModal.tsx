@@ -1,14 +1,23 @@
+// frontend/src/components/DownloadModal.tsx
 import React from 'react';
 import './DownloadModal.css';
 
 interface Props {
   onClose: () => void;
+  onDownload: () => void; // ✅ Добавлен проп для обновления графика
 }
 
-const DownloadModal: React.FC<Props> = ({ onClose }) => {
+const DownloadModal: React.FC<Props> = ({ onClose, onDownload }) => {
   const handleDownload = (buildName: string) => {
-    window.location.href = `/download/${buildName}/`;
-    onClose(); // Закрыть модалку после перехода
+    window.location.href = `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/servers/download/${buildName}/`;
+
+
+    // Дать бэкенду записать статистику, потом обновить график
+    setTimeout(() => {
+      onDownload(); // ✅ Триггерим обновление графика
+    }, 2000);
+
+    onClose();
   };
 
   return (
