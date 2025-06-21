@@ -1,23 +1,31 @@
 import React from 'react';
 import './DownloadModal.css';
 
-interface DownloadModalProps {
-  isOpen: boolean;
+interface Props {
   onClose: () => void;
 }
 
-const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+const DownloadModal: React.FC<Props> = ({ onClose }) => {
+  const handleDownload = (buildName: string) => {
+    window.location.href = `/download/${buildName}/`;
+    onClose(); // Закрыть модалку после перехода
+  };
 
   return (
-    <div className="download-modal-overlay" onClick={onClose}>
-      <div className="download-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="download-modal-overlay">
+      <div className="download-modal">
         <h3>Выберите сборку для скачивания</h3>
         <div className="download-options">
-          <a href="/api/servers/download/build1/" download className="btn-download">Сборка #1</a>
-          <a href="/api/servers/download/build2/" download className="btn-download">Сборка #2</a>
+          <button onClick={() => handleDownload('build1')} className="btn-download">
+            Сборка #1
+          </button>
+          <button onClick={() => handleDownload('build2')} className="btn-download">
+            Сборка #2
+          </button>
         </div>
-        <button className="btn-close" onClick={onClose}>Закрыть</button>
+        <button onClick={onClose} className="btn-close">
+          Закрыть
+        </button>
       </div>
     </div>
   );

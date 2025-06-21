@@ -111,3 +111,29 @@ def get_client_ip(request):
     if x_forwarded:
         return x_forwarded.split(',')[0]
     return request.META.get('REMOTE_ADDR')
+
+
+# backend/servers/views.py
+
+from django.utils.timezone import localtime
+from django.db.models import Count
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import DownloadStat
+
+class DailyDownloadStatsView(APIView):
+    def get(self, request):
+        # Загружаем все записи
+        downloads = DownloadStat.objects.all()
+        
+        # Группируем вручную по локальной дате
+        stats = {}
+        for d in downloads:
+            local_date = localtime(d.downloaded_at).date().isoformat()
+            stats[local_date] = stats.get(local_date, 0) + 1
+
+        # Преобразуем в список
+        result = [{"date": date, "total": count} for date, count in sorted(stats.items())]
+        return Response(result)
+    
+    

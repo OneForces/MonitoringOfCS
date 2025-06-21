@@ -13,56 +13,56 @@
 
 .download-modal {
   background: white;
+  color: #111; /* 👈 обязательно */
   padding: 2rem;
-  border-radius: 10px;
-  width: 300px;
+  border-radius: 12px;
+  width: 320px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   text-align: center;
-}
-
-.download-options {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin: 1rem 0;
-}
-
-.btn-download {
-  background-color: #3c82f6;
-  color: white; /* 👈 добавь эту строку */
-  padding: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  text-decoration: none;
-  display: block;
-  text-align: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.btn-close {
-  background: #eee;
-  color: #444;
-  border: none;
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 4px;
-  margin-top: 8px;
-  transition: background 0.2s ease;
-}
-
-.btn-close:hover {
-  background: #d5d5d5;
-}
-
-.btn-download:hover {
-  background-color: #2c6fd3;
 }
 
 .download-modal h3 {
   font-size: 18px;
   font-weight: 600;
   color: #2c3e50;
-  margin-bottom: 16px;
+  margin-bottom: 1.5rem;
+}
+
+.download-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn-download {
+  background-color: #337dff;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-download:hover {
+  background-color: #2c6fd3;
+}
+
+.btn-close {
+  margin-top: 1.2rem;
+  padding: 8px 20px;
+  background-color: #eee;
+  color: #444;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.btn-close:hover {
+  background-color: #d5d5d5;
 }

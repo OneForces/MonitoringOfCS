@@ -94,10 +94,9 @@ const Header: React.FC = () => {
         </span>
       </nav>
 
-      <DownloadModal
-        isOpen={isDownloadModalOpen}
-        onClose={() => setDownloadModalOpen(false)}
-      />
+      {isDownloadModalOpen && (
+        <DownloadModal onClose={() => setDownloadModalOpen(false)} />
+      )}
     </header>
   );
 };

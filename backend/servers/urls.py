@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ServerViewSet, ServerPingView, MyServersAPIView, ServerStatsAPIView, download_build, DownloadStatsView
+from .views import ServerViewSet, ServerPingView, MyServersAPIView, ServerStatsAPIView, download_build, DownloadStatsView, DailyDownloadStatsView
 from promotions.views import CreateBalanceTopUpView
 
 
@@ -14,6 +14,6 @@ urlpatterns = [
     path("robokassa/balance/topup/", CreateBalanceTopUpView.as_view(), name="balance_topup"),
     path('', include(router.urls)),
     path('download/<str:build_name>/', download_build, name='download_build'),
-    path('download/<str:build_name>/', download_build, name='download_build'),
     path('downloads/stats/', DownloadStatsView.as_view(), name='download_stats'),
+    path('downloads/daily/', DailyDownloadStatsView.as_view(), name='daily-download-stats'),
 ]
