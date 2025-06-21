@@ -66,3 +66,16 @@
 .btn-close:hover {
   background-color: #d5d5d5;
 }
+.build-block {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.build-description {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 8px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}

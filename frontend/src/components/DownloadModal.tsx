@@ -4,17 +4,15 @@ import './DownloadModal.css';
 
 interface Props {
   onClose: () => void;
-  onDownload: () => void; // ✅ Добавлен проп для обновления графика
+  onDownload: () => void;
 }
 
 const DownloadModal: React.FC<Props> = ({ onClose, onDownload }) => {
   const handleDownload = (buildName: string) => {
-    window.location.href = `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/servers/download/${buildName}/`;
+    window.location.href = `/api/servers/download/${buildName}/`;
 
-
-    // Дать бэкенду записать статистику, потом обновить график
     setTimeout(() => {
-      onDownload(); // ✅ Триггерим обновление графика
+      onDownload();
     }, 2000);
 
     onClose();
@@ -25,12 +23,25 @@ const DownloadModal: React.FC<Props> = ({ onClose, onDownload }) => {
       <div className="download-modal">
         <h3>Выберите сборку для скачивания</h3>
         <div className="download-options">
-          <button onClick={() => handleDownload('build1')} className="btn-download">
-            Сборка #1
-          </button>
-          <button onClick={() => handleDownload('build2')} className="btn-download">
-            Сборка #2
-          </button>
+
+          <div className="build-block">
+            <button onClick={() => handleDownload('build1')} className="btn-download">
+              Сборка #1
+            </button>
+            <p className="build-description">
+              📦 Классическая сборка CS 1.6 с русификатором, улучшенным прицелом и паком карт de_dust2, inferno, mirage.
+            </p>
+          </div>
+
+          <div className="build-block">
+            <button onClick={() => handleDownload('build2')} className="btn-download">
+              Сборка #2
+            </button>
+            <p className="build-description">
+              🔥 Модифицированная сборка с админ-меню, плагинами AMX Mod X, античитом и сборником крутых скинов.
+            </p>
+          </div>
+
         </div>
         <button onClick={onClose} className="btn-close">
           Закрыть
