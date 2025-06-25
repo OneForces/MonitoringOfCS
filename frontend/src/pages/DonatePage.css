@@ -1,0 +1,70 @@
+/* frontend/src/pages/DonatePage.css */
+
+.donate-container {
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.donate-container h2 {
+  margin-top: 0;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.donate-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.donate-container label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.donate-container input,
+.donate-container select {
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.donate-container button {
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4a90e2;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.donate-container button:hover {
+  background-color: #3578c3;
+}
+
+.donate-container .error,
+.donate-container .success {
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.donate-container .error {
+  color: red;
+}
+
+.donate-container .success {
+  color: green;
+}

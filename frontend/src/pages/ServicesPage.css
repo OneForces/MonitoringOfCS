@@ -1,0 +1,121 @@
+.promotion-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.7;
+  color: #333;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.promotion-page h2 {
+  font-size: 2rem;
+  color: #1e88e5;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.promotion-page h3 {
+  font-size: 1.5rem;
+  color: #1976d2;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.promotion-page p {
+  margin: 0.5rem 0;
+}
+
+.promotion-page strong {
+  color: #000;
+  font-weight: 600;
+}
+
+.promotion-page ul {
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+  list-style-type: disc;
+}
+
+.promotion-page li {
+  margin-bottom: 0.5rem;
+}
+
+.promotion-page a {
+  color: #1976d2;
+  text-decoration: underline;
+}
+
+.promotion-page a:hover {
+  color: #0d47a1;
+  text-decoration: none;
+}
+
+.monitoring-button-wrapper {
+  margin: 20px 0 40px;
+  text-align: center;
+}
+
+.monitoring-button {
+  background-color: #2f6de1;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.monitoring-button:hover {
+  background-color: #174bb5;
+}
+
+
+.services-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+}
+
+.services-page h1,
+.services-page h2,
+.services-page h3 {
+  text-align: center;
+  color: #222;
+  margin-bottom: 20px;
+}
+
+.services-page p,
+.services-page li {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.services-page ul {
+  padding-left: 20px;
+}
+
+.services-page .monitoring-button {
+  display: block;
+  margin: 30px auto;
+  padding: 12px 24px;
+  background-color: #0066cc;
+  color: #fff;
+  border: none;
+  font-size: 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.services-page .monitoring-button:hover {
+  background-color: #004c99;
+}

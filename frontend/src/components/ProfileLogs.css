@@ -1,0 +1,28 @@
+.logs-container {
+  padding: 20px;
+}
+
+.logs-search {
+  padding: 6px 10px;
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.logs-table th,
+.logs-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.logs-table th {
+  background-color: #f5f5f5;
+}

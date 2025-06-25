@@ -1,0 +1,209 @@
+.profile-layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.profile-sidebar {
+  width: 240px;
+  background: #f7f7f7;
+  padding: 20px;
+  margin-right: 20px;
+  border-right: 1px solid #ccc;
+}
+
+.profile-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.profile-sidebar li {
+  padding: 10px 0;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+}
+
+.profile-sidebar li.active {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.profile-content {
+  flex: 1;
+}
+
+/* Баланс */
+.balance-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f6f9fc;
+  padding: 15px 20px;
+  border: 1px solid #d1e7dd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.balance-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.balance-label {
+  font-weight: 600;
+  color: #333;
+}
+
+.balance-amount {
+  color: #198754;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.topup-btn {
+  background: #0d6efd;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.topup-btn:hover {
+  background-color: #0b5ed7;
+}
+
+/* Модальное окно */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 20px 25px;
+  border-radius: 8px;
+  width: 320px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal input {
+  width: 100%;
+  margin-top: 10px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirm-btn {
+  background: #198754;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #dee2e6;
+  color: #333;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Сервер */
+.server-box {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.server-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+button.add-server {
+  margin-top: 20px;
+  padding: 10px 16px;
+  background: #007bff;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button.delete-button {
+  background: red;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.promote-button {
+  background-color: #00cc00;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.promote-button:hover {
+  background-color: #009900;
+}
+
+.buy-votes {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 2rem;
+  background: #f9f9f9;
+}
+.buy-votes input[type='number'] {
+  width: 80px;
+  margin-left: 0.5rem;
+}
+.vote-message {
+  margin-top: 0.5rem;
+  color: #333;
+}
+
+.notification-box {
+  background: #f5f5f5;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #8e44ad;
+}

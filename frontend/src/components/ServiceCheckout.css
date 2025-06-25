@@ -1,0 +1,276 @@
+/* Общий контейнер */
+.service-checkout-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+/* Основный блок */
+.checkout-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 550px;
+  width: 100%;
+  font-family: sans-serif;
+}
+
+/* Заголовок */
+.checkout-box h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Информация о сервере/услуге */
+.checkout-info > div,
+.checkout-box p {
+  margin-bottom: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.label {
+  font-weight: 600;
+  margin-right: 5px;
+  color: #333;
+}
+
+.value {
+  color: #222;
+}
+
+/* Группа с select или цветами */
+.form-group {
+  margin-top: 20px;
+}
+
+.form-group label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  box-sizing: border-box;
+}
+
+/* Цветовые кружки */
+.color-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.color-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.color-circle.selected {
+  border: 3px solid #000;
+}
+
+/* Итоговая цена */
+.total {
+  font-weight: bold;
+  font-size: 17px;
+  margin-top: 20px;
+}
+
+/* Кнопки действия */
+.checkout-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.btn-buy,
+.btn-back {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-buy {
+  background-color: #198754;
+  color: white;
+}
+
+.btn-buy:hover {
+  background-color: #146c43;
+}
+
+.btn-back {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-back:hover {
+  background-color: #cfcfcf;
+}
+
+/* Сообщения */
+.success-message {
+  color: green;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: red;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+/* /src/components/ServiceCheckout.css */
+
+.service-checkout-container {
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+.checkout-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+}
+
+.checkout-box h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.checkout-info > div {
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.label {
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.value {
+  color: #333;
+}
+
+.form-group {
+  margin-top: 20px;
+}
+
+.form-group label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group select,
+.form-group input[type='number'] {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  box-sizing: border-box;
+}
+
+.color-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.color-options button {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.color-options button.selected {
+  border: 3px solid #222;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+.total {
+  font-weight: bold;
+  font-size: 17px;
+  margin-top: 15px;
+}
+
+.checkout-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 25px;
+  gap: 12px;
+}
+
+.btn-buy,
+.btn-back {
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-buy {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-buy:hover {
+  background-color: #0069d9;
+}
+
+.btn-back {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-back:hover {
+  background-color: #d5d5d5;
+}
+
+.success-message {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.error-message {
+  margin-top: 15px;
+  color: red;
+  font-weight: 500;
+}

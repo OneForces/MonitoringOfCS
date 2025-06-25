@@ -1,0 +1,25 @@
+[
+  {
+    "model": "promotions.service",
+    "pk": 1,
+    "fields": {
+      "name": "BOOST и GAMEMENU от 15р",
+      "description": "Круги на вылет. В поиске по порядку после услуги Премиум",
+      "price_per_unit": "15.00",
+      "service_type": "boost",
+      "duration_days": 0
+    }
+  },
+  {
+    "model": "promotions.service",
+    "pk": 2,
+    "fields": {
+      "name": "Цвет 190р / 30 дней",
+      "description": "Приоритет серверов с VIP в случайном порядке после услуги",
+      "price_per_unit": "190.00",
+      "service_type": "color",
+      "duration_days": 30,
+      "available_colors": ["#77ffaa", "#ffff55", "#ff8888", "#bbccff", "#f2aafc"]
+    }
+  }
+]

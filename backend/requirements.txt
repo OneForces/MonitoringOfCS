@@ -1,0 +1,29 @@
+# Основное
+Django>=4.2
+djangorestframework>=3.14
+djangorestframework-simplejwt>=5.3.1
+django-cors-headers>=4.0.0
+gunicorn
+# PostgreSQL
+psycopg2-binary>=2.9
+
+# Celery + Redis
+celery>=5.3
+redis>=5.0
+
+# Проверка серверов CS
+python-valve>=0.1.2
+
+# Оплата
+stripe>=9.0.0
+yookassa>=2.3.2
+
+# Утилиты
+python-dotenv>=1.0.1
+requests>=2.31.0
+
+# Безопасность (хэширование, валидация)
+argon2-cffi>=23.1.0
+
+python-a2s
+Pillow

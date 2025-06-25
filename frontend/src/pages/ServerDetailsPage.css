@@ -1,0 +1,157 @@
+/* Контейнер всей страницы */
+.server-details-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 15px;
+}
+
+/* Основная карточка */
+.server-details-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 30px;
+  width: 100%;
+  max-width: 850px;
+  background: #ffffff;
+  padding: 25px 30px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Левая часть — информация о сервере */
+.server-info-left {
+  flex: 1 1 400px;
+}
+
+/* Заголовок */
+.server-info-left h2,
+.server-title {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Список характеристик */
+.server-info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 15px;
+  color: #333;
+}
+
+.server-info-list li {
+  margin-bottom: 8px;
+}
+
+/* Название карты */
+.map-name {
+  display: inline-block;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  background: #f1f1f1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-family: monospace;
+}
+
+/* Контейнер с картой */
+.server-map-preview {
+  flex: 0 0 200px;
+  max-width: 200px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.server-map-preview {
+  flex: 0 0 240px;
+  max-width: 240px;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000; /* скрывает белый фон, если есть пустота */
+}
+
+.map-image {
+  width: 340px;
+  height: 160px;
+  object-fit: cover;
+  object-position: right center;
+  transform: translateX(40px);
+  mask-image: linear-gradient(to left, black 85%, transparent); /* 👈 маска плавного скрытия */
+  -webkit-mask-image: linear-gradient(to left, black 85%, transparent);
+}
+
+.server-map-preview {
+  background-color: transparent; /* убираем фон */
+}
+
+.purchased-services {
+  margin-top: 40px;
+  padding: 20px 10px;
+  background: #fefefe;
+  border-radius: 8px;
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+
+.purchased-services h3 {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 15px;
+}
+
+.purchased-services-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 15px;
+}
+
+.purchased-services-list li {
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+  color: #444;
+}
+
+.purchased-services-list li:first-child {
+  border-top: none;
+}
+
+.service-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.service-extra {
+  color: #777;
+  font-style: italic;
+  margin-left: 6px;
+}
+
+.service-expiration {
+  margin-left: 8px;
+  color: #666;
+}
